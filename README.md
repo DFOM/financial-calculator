@@ -19,11 +19,11 @@ Solve for Any TVM Variable: Calculate Present Value (PV), Future Value (FV), Pay
 - cd financial-calculator
 - Create and activate a Python virtual environment: 
 
-* For macOS/Linux
+# For macOS/Linux
 - python3 -m venv venv
 - source venv/bin/activate
 
-* For Windows
+# For Windows
 - py -m venv venv
 - venv\Scripts\activate
 - Install the required packages:pip install -r requirements.txt
