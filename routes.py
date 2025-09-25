@@ -1,3 +1,4 @@
+# If this file IS your main app module (app.py), use this:
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
 from app import app
 
@@ -220,32 +221,12 @@ def calculate():
         traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 400
 
-# --- CONTACT PAGE ROUTES (Updated) ---
+# --- CONTACT PAGE ROUTES (Simplified) ---
 
 @app.route('/contact')
 def contact():
     """Renders the contact page."""
     return render_template('contact.html')
 
-@app.route('/submit-contact', methods=['POST'])
-def submit_contact():
-    """
-    Handles submission of the contact form.
-    NOTE: This is a placeholder. It does not actually send an email.
-    """
-    email = request.form.get('email')
-    category = request.form.get('category')
-    subject = request.form.get('subject')
-    message = request.form.get('message')
-    
-    print(f"--- CONTACT FORM SUBMISSION ---")
-    print(f"Email: {email}, Category: {category}, Subject: {subject}")
-    print("-----------------------------")
-
-    # --- NEW LOGIC: Flash a message and redirect to the main page ---
-    flash('Thank you! Your message has been received.', 'success')
-    return redirect(url_for('index'))
-    # --- END NEW LOGIC ---
-
-# The '/thank-you' route is no longer needed and has been removed.
+# The /submit-contact route is no longer needed as Formspree handles it.
 

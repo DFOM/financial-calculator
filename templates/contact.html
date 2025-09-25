@@ -20,38 +20,39 @@
 
             <!-- Form Card -->
             <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200">
-                <!-- This form is for display purposes. A backend email service is needed to make it functional. -->
-                <form id="contact-form" action="/submit-contact" method="POST" enctype="multipart/form-data">
+                <!-- IMPORTANT: The 'action' attribute now points to Formspree -->
+                <form id="contact-form" action="https://formspree.io/f/xkgqgbew" method="POST" enctype="multipart/form-data">
                     <div class="space-y-6">
                         
                         <div>
                             <label for="email" class="form-label">Your Email (Optional)</label>
-                            <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com">
+                            <!-- The 'name' attribute is important for Formspree -->
+                            <input type="email" id="email" name="Email" class="form-input" placeholder="you@example.com">
                         </div>
 
                         <div>
                             <label for="category" class="form-label">Category</label>
-                            <select id="category" name="category" class="form-select" required>
-                                <option value="problem">Problem / Bug Report</option>
-                                <option value="suggestion">Suggestion / Feature Request</option>
-                                <option value="question">General Question</option>
-                                <option value="other">Other</option>
+                            <select id="category" name="Category" class="form-select" required>
+                                <option value="Problem/Bug">Problem / Bug Report</option>
+                                <option value="Suggestion">Suggestion for a New Feature</option>
+                                <option value="Question">Question</option>
+                                <option value="General Feedback">General Feedback</option>
                             </select>
                         </div>
 
                         <div>
                             <label for="subject" class="form-label">Subject</label>
-                            <input type="text" id="subject" name="subject" class="form-input" placeholder="e.g., Feedback on the calculator" required>
+                            <input type="text" id="subject" name="Subject" class="form-input" placeholder="e.g., Feedback on the calculator" required>
                         </div>
                         
                         <div>
                             <label for="message" class="form-label">Message</label>
-                            <textarea id="message" name="message" rows="6" class="form-input" placeholder="Your message here..." required></textarea>
+                            <textarea id="message" name="Message" rows="6" class="form-input" placeholder="Your message here..." required></textarea>
                         </div>
 
                         <div>
                             <label for="attachment" class="form-label">Attach Screenshot (Optional)</label>
-                            <input type="file" id="attachment" name="attachment" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" accept="image/*">
+                            <input type="file" id="attachment" name="Attachment" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" accept="image/*">
                             <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 5MB.</p>
                         </div>
 
