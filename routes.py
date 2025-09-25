@@ -1,5 +1,4 @@
-# If this file IS your main app module (app.py), use this:
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
 from app import app
 
 # If this file is a routes module inside a package and you already create app elsewhere,
@@ -57,13 +56,11 @@ def calculate():
         fv = to_decimal(data.get('fv'))
         pmt = to_decimal(data.get('pmt'))
         
-        # --- FIX: Only calculate NPer from Term if we are NOT solving for NPer ---
         if solve_for == 'nper':
-            nper = Decimal(0) # Use a placeholder
+            nper = Decimal(0) 
         else:
             term_in_years = to_decimal(data.get('term_in_years'))
             nper = term_in_years * pmt_freq
-        # --- END FIX ---
 
         rate = to_decimal(data.get('rate'))
         initial_pmt = to_decimal(data.get('initial_pmt', 0))
@@ -155,7 +152,7 @@ def calculate():
             if solve_for == 'pv': pv = solved_value
             elif solve_for == 'fv': fv = solved_value
             elif solve_for == 'pmt': pmt = solved_value
-            elif solve_for == 'nper': nper = solved_value # Now nper is the solved value
+            elif solve_for == 'nper': nper = solved_value
 
         if solve_for == 'fv' and scenario == 'investment': solved_value = abs(solved_value)
         if solve_for == 'pv' and scenario == 'loan': solved_value = abs(solved_value)
@@ -205,13 +202,11 @@ def calculate():
 
         period_name = PERIOD_NAMES.get(pmt_freq, "Period")
         
-        # When solving for NPer, return it in years
         if solve_for == 'nper':
             final_solved_value = float(solved_value / pmt_freq) if pmt_freq > 0 else 0
             period_labels = [f"{period_name} {i}" for i in range(1, int(round(float(solved_value))) + 1)]
         else:
             period_labels = [f"{period_name} {i}" for i in range(1, schedule_nper + 1)]
-
 
         return jsonify({
             'success': True, 'solved_variable': solve_for,
@@ -224,4 +219,33 @@ def calculate():
         import traceback
         traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 400
+
+# --- CONTACT PAGE ROUTES (Updated) ---
+
+@app.route('/contact')
+def contact():
+    """Renders the contact page."""
+    return render_template('contact.html')
+
+@app.route('/submit-contact', methods=['POST'])
+def submit_contact():
+    """
+    Handles submission of the contact form.
+    NOTE: This is a placeholder. It does not actually send an email.
+    """
+    email = request.form.get('email')
+    category = request.form.get('category')
+    subject = request.form.get('subject')
+    message = request.form.get('message')
+    
+    print(f"--- CONTACT FORM SUBMISSION ---")
+    print(f"Email: {email}, Category: {category}, Subject: {subject}")
+    print("-----------------------------")
+
+    # --- NEW LOGIC: Flash a message and redirect to the main page ---
+    flash('Thank you! Your message has been received.', 'success')
+    return redirect(url_for('index'))
+    # --- END NEW LOGIC ---
+
+# The '/thank-you' route is no longer needed and has been removed.
 
