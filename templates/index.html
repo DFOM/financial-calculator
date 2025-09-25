@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Financial Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-slate-50">
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Advanced Financial Calculator</h1>
+                <p class="mt-3 text-lg text-gray-600">A powerful tool for complex time-value-of-money problems.</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200">
+                <form id="tvm-form">
+                    <div class="space-y-8">
+                        <!-- Section 1: Core Setup -->
+                        <fieldset>
+                            <legend class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3 mb-4">1. Setup</legend>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                                <div>
+                                    <label for="solve_for" class="form-label">What do you want to solve for?</label>
+                                    <select id="solve_for" name="solve_for" class="form-select">
+                                        <option value="fv">Future Value (FV)</option>
+                                        <option value="pv">Present Value (PV)</option>
+                                        <option value="pmt">Regular Payment (PMT)</option>
+                                        <option value="specific_pmt">A Specific Payment's Value</option>
+                                        <option value="nper">Number of Periods</option>
+                                        <option value="rate">Interest Rate</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="scenario" class="form-label">Scenario / Cashflow Direction</label>
+                                    <select id="scenario" name="scenario" class="form-select">
+                                        <option value="investment">Investment / Savings</option>
+                                        <option value="loan">Loan / Mortgage</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- Section 2: Rate & Compounding -->
+                        <fieldset>
+                            <legend class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3 mb-4">2. Interest Rate</legend>
+                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                                <div>
+                                    <label for="rate_type" class="form-label">Rate Input Type</label>
+                                    <select id="rate_type" name="rate_type" class="form-select">
+                                        <option value="apr">Nominal APR</option>
+                                        <option value="ear">Effective Annual Rate (EAR)</option>
+                                        <option value="period_rate">Per-Period Rate</option>
+                                    </select>
+                                </div>
+                                <div id="compounding-section">
+                                    <label for="compounding_freq" class="form-label">Compounding Frequency</label>
+                                    <select id="compounding_freq" name="compounding_freq" class="form-select">
+                                        <option value="1" selected>Annually</option>
+                                        <option value="2">Semi-Annually</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                        <option value="52">Weekly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- Section 3: Payments (New Modern UI) -->
+                        <fieldset>
+                            <legend class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3 mb-4">3. Payments</legend>
+                            <div id="payment-type-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <!-- JS will populate these cards -->
+                            </div>
+                            <input type="hidden" id="has_pmt" name="has_pmt" value="no">
+
+                            <!-- Details sections for each payment type -->
+                            <div id="regular-payment-details" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 mt-6">
+                                 <div>
+                                    <label for="pmt_freq" class="form-label">Payment Frequency</label>
+                                    <select id="pmt_freq" name="pmt_freq" class="form-select">
+                                        <option value="1">Annually</option>
+                                        <option value="2">Semi-Annually</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                        <option value="52">Weekly</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">Payment Timing</label>
+                                    <div class="flex items-center space-x-6 pt-2">
+                                        <label class="radio-label space-x-2"><input type="radio" name="when" value="end" class="form-radio" checked><span>End</span></label>
+                                        <label class="radio-label space-x-2"><input type="radio" name="when" value="begin" class="form-radio"><span>Beginning</span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="growing-payment-details" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 mt-6">
+                                <div>
+                                    <label for="growth_rate" class="form-label">Payment Growth Rate (%)</label>
+                                    <input type="number" step="any" id="growth_rate" name="growth_rate" class="form-input" placeholder="e.g., 10">
+                                </div>
+                                <div id="specific-payment-period-section">
+                                    <label for="specific_pmt_period" class="form-label">Which payment to solve for?</label>
+                                    <input type="number" id="specific_pmt_period" name="specific_pmt_period" class="form-input" placeholder="e.g., 10">
+                                </div>
+                            </div>
+
+                            <div id="custom-payments-section" class="mt-6 space-y-4">
+                                <div>
+                                    <label for="num_custom_payments" class="form-label">Number of Payments</label>
+                                    <input type="number" id="num_custom_payments" name="num_custom_payments" class="form-input" placeholder="e.g., 4">
+                                </div>
+                                <div id="custom-payments-table-container" class="space-y-2"></div>
+                            </div>
+
+                        </fieldset>
+
+                        <!-- Section 4: Known Variables -->
+                        <fieldset>
+                             <legend class="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-3 mb-4">4. Known Values</legend>
+                            <div id="data-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                                <div class="input-group" data-variable="pv"><label for="pv" class="form-label">Present Value (PV)</label><input type="number" step="any" id="pv" name="pv" class="form-input" placeholder="e.g., 1000"></div>
+                                <div class="input-group" data-variable="fv"><label for="fv" class="form-label">Future Value (FV)</label><input type="number" step="any" id="fv" name="fv" class="form-input" placeholder="e.g., 0"></div>
+                                <div class="input-group" data-variable="pmt"><label for="pmt" class="form-label">Payment (PMT)</label><input type="number" step="any" id="pmt" name="pmt" class="form-input" placeholder="e.g., 100"></div>
+                                <div class="input-group" data-variable="initial_pmt"><label for="initial_pmt" class="form-label">Initial Payment</label><input type="number" step="any" id="initial_pmt" name="initial_pmt" class="form-input" placeholder="e.g., 100"></div>
+                                <!-- UI TWEAK: Changed NPer to be more intuitive -->
+                                <div class="input-group" data-variable="nper">
+                                    <label for="term_in_years" class="form-label">Term (in Years)</label>
+                                    <input type="number" step="any" id="term_in_years" name="term_in_years" class="form-input" placeholder="e.g., 5">
+                                </div>
+                                <!-- DYNAMIC LABEL TWEAK: Added ID to the rate label -->
+                                <div class="input-group" data-variable="rate">
+                                    <label for="rate" class="form-label" id="rate-label">Interest Rate (%)</label>
+                                    <input type="number" step="any" id="rate" name="rate" class="form-input" placeholder="e.g., 5">
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="pt-4">
+                            <button type="submit" id="main-button" class="w-full flex justify-center py-3 px-4 text-lg font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg">
+                                Calculate
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Error Message & Results Section (same as before) -->
+            <div id="error-message" class="hidden mt-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg" role="alert"></div>
+            <div id="results-section" class="hidden mt-12">
+                 <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Results</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="summary-card">
+                        <h3 id="solved-variable-name" class="summary-title">Solved Value</h3>
+                        <p id="solved-value" class="summary-value"></p>
+                    </div>
+                    <div class="summary-card">
+                        <h3 class="summary-title">Final Balance</h3>
+                        <p id="summary-final-balance" class="summary-value"></p>
+                    </div>
+                    <div class="summary-card">
+                        <h3 class="summary-title">Total Payments</h3>
+                        <p id="summary-total-payments" class="summary-value"></p>
+                    </div>
+                    <div class="summary-card">
+                        <h3 class="summary-title">Total Interest</h3>
+                        <p id="summary-total-interest" class="summary-value"></p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 mb-8">
+                     <h3 class="text-xl font-semibold text-gray-900 mb-4">Balance Over Time</h3>
+                    <div class="h-96">
+                        <canvas id="balance-chart"></canvas>
+                    </div>
+                </div>
+                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+                     <h3 class="text-xl font-semibold text-gray-900 mb-4">Detailed Schedule</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="table-header">Period</th>
+                                    <th class="table-header">Start Balance</th>
+                                    <th class="table-header">Interest</th>
+                                    <th class="table-header">Payment</th>
+                                    <th class="table-header">Principal Paid</th>
+                                    <th class="table-header">End Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schedule-table-body" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script id="variables-data" type="application/json">
+        {{ variables | tojson }}
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+

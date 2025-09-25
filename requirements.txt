@@ -1,0 +1,15 @@
+Flasknumpy-financialgunicorn
+### **Phase 2: Get Your Code on GitHub**
+
+Render works by connecting directly to a GitHub repository.
+
+1.  **Create a GitHub Account:** If you don't have one, sign up for a free account at [GitHub.com](https://github.com).
+2.  **Create a New Repository:** On your GitHub page, click the "+" icon in the top right and select "New repository". Name it something like `financial-calculator` and keep it "Public". Click "Create repository".
+3.  **Upload Your Project:** Follow the instructions on the next page under the "...or push an existing repository from the command line" section. It will look something like this (run these commands in your Mac's terminal inside your `financial_app` folder):
+    ```bash
+    git init
+    git add .
+    git commit -m "First version of financial calculator"
+    git branch -M main
+    git remote add origin https://github.com/YourUsername/financial-calculator.git
+    git push -u origin main
