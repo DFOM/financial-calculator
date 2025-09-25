@@ -13,19 +13,19 @@ Solve for Any TVM Variable: Calculate Present Value (PV), Future Value (FV), Pay
 - Detailed Amortization Schedules: Generates a full, period-by-period table showing the breakdown of interest, principal, and balance.
 - Interactive Visualization: Includes a chart that visually represents the account balance over time.
 
-Running the Application Locally:
-To run this project on your own computer, follow these steps:
-1- Clone the repository:git clone [https://github.com/YourUsername/financial-calculator.git]
-2- cd financial-calculator
-3- Create and activate a Python virtual environment: 
+# Running the Application Locally:
+* To run this project on your own computer, follow these steps:
+- Clone the repository:git clone [https://github.com/DFOM/financial-calculator.git]
+- cd financial-calculator
+- Create and activate a Python virtual environment: 
 
-# For macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
+* For macOS/Linux
+- python3 -m venv venv
+- source venv/bin/activate
 
-# For Windows
-py -m venv venv
-venv\Scripts\activate
-Install the required packages:pip install -r requirements.txt
-Run the Flask application:python app.py
-The application will be available at http://127.0.0.1:5000 in your web browser.
+* For Windows
+- py -m venv venv
+- venv\Scripts\activate
+- Install the required packages:pip install -r requirements.txt
+- Run the Flask application:python app.py
+- The application will be available at http://127.0.0.1:5000 in your web browser.
